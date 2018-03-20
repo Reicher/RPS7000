@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func sayhelloName(w http.ResponseWriter, r *http.Request) {
+func startpage(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm() //Parse url parameters passed, then parse the response packet for the POST body (request body)
 	// attention: If you do not call ParseForm method, the following data can not be obtained form
 	fmt.Println(r.Form) // print information on server side.
@@ -19,13 +19,18 @@ func sayhelloName(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("key:", k)
 		fmt.Println("val:", strings.Join(v, ""))
 	}
-	fmt.Fprintf(w, "RPS8000!") // write data to response
+	t, _ := template.ParseFiles("startpage.gtpl")
+	t.Execute(w, nil)
+
+	// fmt.Fprintf(w, "RPS8000!") // write data to response
+	// fmt.Fprintf(w, "");
+
 }
 
 func practice(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("method:", r.Method) //get request method
 	if r.Method == "GET" {
-		t, _ := template.ParseFiles("login.gtpl")
+		t, _ := template.ParseFiles("practice.gtpl")
 		t.Execute(w, nil)
 	} else {
 		r.ParseForm()
@@ -35,7 +40,7 @@ func practice(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", sayhelloName) // setting router rule
+	http.HandleFunc("/", startpage) // setting router rule
 	http.HandleFunc("/practice", practice)
 	err := http.ListenAndServe(":9090", nil) // setting listening port
 	if err != nil {
