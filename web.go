@@ -5,67 +5,15 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"strings"
 	"math/rand"
-	// "strconv"
+	"github.com/reicher/RPS7000/gesture"
 )
-
-/////  Gesture stuff, put somewhere else? //////
-const (
-        ROCK int = 0
-        PAPER int = 1
-        SCISSORS int = 2
-)
-
-// Returns true if p1 wins over p2
-func battle(p1 int, p2 int) int {
-
-	// Draw
-	if p1 == p2 {
-		return 0
-	}
-
-	// p1 win conditions
-	if (p1 == ROCK && p2 == SCISSORS) ||
-		(p1 == PAPER && p2 == ROCK) ||
-		(p1 == SCISSORS && p2 == PAPER){
-		return 1
-	}
-
-	return 2
-}
-
-func stringGesture(g string) int {
- 	switch strings.ToUpper(g) {
-	case "ROCK":
-		return ROCK
-	case "PAPER":
-		return PAPER
-	case "SCISSORS":
-		return SCISSORS
-	}
-	return ROCK // WHAT TO DO ?
-}
-
-
-func gestureString(g int) string {
-	switch g {
-	case 0:
-		return "Rock"
-	case 1:
-		return "Paper"
-	case 2:
-		return "Scissors"
-	}
-	return "None"
-}
-
-/////////////////////////////////////////////
 
 func startpage(w http.ResponseWriter, r *http.Request) {
 
 	// ME: Not really needed? Only for debugging
-	// r.ParseForm() //Parse url parameters passed, then parse the response packet for the POST body (request body)
+	r.ParseForm() //Parse url parameters passed, then parse the response packet for the POST body (request body)
+
 	// // attention: If you do not call ParseForm method, the following data can not be obtained form
 	// fmt.Println(r.Form) // print information on server side.
 	// fmt.Println("path", r.URL.Path)
@@ -92,12 +40,12 @@ func practice(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		r.ParseForm()
 
-		player := stringGesture(r.Form["Choice"][0])
+		player := gesture.FromString(r.Form["Choice"][0])
 		ai := randomAI()
 
-		result := gestureString(player) + " VS: " + gestureString(ai)
+		result := gesture.ToString(player) + " VS: " + gesture.ToString(ai)
 
-		switch battle(player, ai) {
+		switch gesture.Battle(player, ai) {
 		case 0:
 			result += " -> Draw!"
 		case 1:
