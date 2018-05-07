@@ -4,5 +4,7 @@
     </head>
     <body>
       <a href="/practice">Practice</a>
+      <br>
+      <a href="/match">Match</a>
     </body>
 </html>

@@ -39,7 +39,6 @@ func FromString(g string) int {
 	return ROCK // WHAT TO DO ?
 }
 
-
 func ToString(g int) string {
 	switch g {
 	case 0:
