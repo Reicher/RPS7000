@@ -26,7 +26,7 @@ func startpage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Actuall page load
-	t, err := template.ParseFiles("/home/rrr/go/src/github.com/reicher/RPS7000/assets/startpage.gtpl")
+	t, err := template.ParseFiles("~/go/src/github.com/reicher/RPS7000/assets/startpage.gtpl")
 	if err != nil {
 		fmt.Println(err)
 	} else {
@@ -43,7 +43,7 @@ type PracticePageData struct {
 }
 
 func practice(w http.ResponseWriter, r *http.Request) {
-	t, _ := template.ParseFiles("/home/rrr/go/src/github.com/reicher/RPS7000/assets/practice.gtpl")
+	t, _ := template.ParseFiles("~/go/src/github.com/reicher/RPS7000/assets/practice.gtpl")
 	t.Execute(w, nil)
 
 	if r.Method == "POST" {
