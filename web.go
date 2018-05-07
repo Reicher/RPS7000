@@ -15,14 +15,14 @@ func randomAI() int {
 }
 
 type PracticePageData struct {
-	PageTitle string
+	Result string
 }
 
 func practice(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("/home/rrr/go/src/github.com/reicher/RPS7000/assets/practice.gtpl")
 
 	data := PracticePageData{
-		PageTitle: "",
+		Result: "",
 	}
 
 	if r.Method == "POST" {
@@ -31,22 +31,16 @@ func practice(w http.ResponseWriter, r *http.Request) {
 		player := gesture.FromString(r.Form["Choice"][0])
 		ai := randomAI()
 
-		result := gesture.ToString(player) + " VS: " + gesture.ToString(ai)
+		data.Result = "Player " + gesture.ToString(player)+ " VS: AI " + gesture.ToString(ai)
 
 		switch gesture.Battle(player, ai) {
 		case 0:
-			result += " Draw!"
+			data.Result += " => Draw!"
 		case 1:
-			result += " Player Wins!"
+			data.Result += " => Player Wins!"
 		case 2:
-			result +=" AI Wins!"
+			data.Result +=" => AI Wins!"
 		}
-
-		data.PageTitle = result
-
-
-
-		fmt.Println(result)
 	}
 	t.Execute(w, data)
 }
