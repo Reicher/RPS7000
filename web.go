@@ -11,10 +11,10 @@ import (
 )
 
 type gameSet struct {
-    Id        int
-    Player    int
-    AI        int
-    Summary   string
+	Id        int
+	Player    int
+	AI        int
+	Summary   string
 }
 
 type PracticePageData struct {
@@ -29,6 +29,21 @@ func randomAI() int {
 	return 	rand.Intn(3)
 }
 
+func battle_to_string(p1 int, p2 int) string {
+	desc := "Player 1 " + gesture.ToString(p1) +  " VS: Player 2 " + gesture.ToString(p2)
+
+	switch gesture.Battle(p1, p2) {
+	case 0:
+		desc += " => Draw!"
+	case 1:
+		desc += " => Player 1 Wins!"
+	case 2:
+		desc += " => Player 2 Wins!"
+	}
+
+	return desc
+}
+
 func practice(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("/home/rrr/go/src/github.com/reicher/RPS7000/assets/practice.gtpl")
 
@@ -41,17 +56,7 @@ func practice(w http.ResponseWriter, r *http.Request) {
 
 		player := gesture.FromString(r.Form["Choice"][0])
 		ai := randomAI()
-
-		data.Result = "Player " + gesture.ToString(player)+ " VS: AI " + gesture.ToString(ai)
-
-		switch gesture.Battle(player, ai) {
-		case 0:
-			data.Result += " => Draw!"
-		case 1:
-			data.Result += " => Player Wins!"
-		case 2:
-			data.Result +=" => AI Wins!"
-		}
+		fmt.Println(battle_to_string(player, ai))
 	}
 
 	t.Execute(w, data)
@@ -61,9 +66,8 @@ func practice(w http.ResponseWriter, r *http.Request) {
 func match(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("/home/rrr/go/src/github.com/reicher/RPS7000/assets/match.gtpl")
 
-	game := []gameSet{}
 	data := GamePageData{
-		Stats: game,
+		Stats:  []gameSet{},
 	}
 
 	if r.Method == "POST" {
@@ -72,21 +76,10 @@ func match(w http.ResponseWriter, r *http.Request) {
 		set := gameSet{Id:0}
 		set.Player = gesture.FromString(r.Form["Choice"][0])
 		set.AI = randomAI()
-
-		set.Summary = "Player " + gesture.ToString(set.Player) +
-			" VS: AI " + gesture.ToString(set.AI)
-
-		switch gesture.Battle(set.Player, set.AI) {
-		case 0:
-			set.Summary += " => Draw!"
-		case 1:
-			set.Summary += " => Player Wins!"
-		case 2:
-			set.Summary +=" => AI Wins!"
-		}
+		set.Summary = battle_to_string(set.Player, set.AI)
 
 		data.Stats = append(data.Stats, set)
-		fmt.Println("Set! " + data.Stats[0].Summary)
+		fmt.Println("Sets: " + string(len(data.Stats)))
 	}
 	t.Execute(w, data)
 }
