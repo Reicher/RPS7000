@@ -56,7 +56,7 @@ func practice(w http.ResponseWriter, r *http.Request) {
 
 		player := gesture.FromString(r.Form["Choice"][0])
 		ai := randomAI()
-		fmt.Println(battle_to_string(player, ai))
+		data.Result = battle_to_string(player, ai)
 	}
 
 	t.Execute(w, data)
